@@ -14,6 +14,8 @@ struct EventSpecification: Hashable, Codable
     var time: Date
     var info: String
     var coordinates: Coordinates
+    var meetupCoords: Coordinates
+    var meetupTime: Date
     var imageName: String
     var image: Image {
         Image(imageName)
@@ -22,4 +24,8 @@ struct EventSpecification: Hashable, Codable
         var latitude: Double
         var longitude: Double
     }
+    var rsvps: [User],
+    creator: User,
+        group: String
+    
 }

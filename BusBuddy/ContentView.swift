@@ -32,8 +32,7 @@ struct ContentView: View {
                                 .font(.system(size: 28))
                         }
                         .tabItem {
-                            Image(systemName: "plus.circle")
-                            Text("Add")
+                            Image(systemName: "plus")
                         }
             
         }
