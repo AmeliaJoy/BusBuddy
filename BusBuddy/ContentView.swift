@@ -8,9 +8,27 @@
 import SwiftUI
 import SwiftData
 
+// Updated model to hold start + end times
+@Model
+class Event {
+    var id: UUID
+    var title: String
+    var startTime: Date
+    var endTime: Date
+    var locationName: String? // human-readable address
+
+    init(title: String, startTime: Date, endTime: Date) {
+        self.id = UUID()
+        self.title = title
+        self.startTime = startTime
+        self.endTime = endTime
+    }
+}
+
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var events: [Event]
     @State private var showingAddEvent = false
 
     var body: some View {
@@ -18,81 +36,77 @@ struct ContentView: View {
             FeedView()
                 .tabItem {
                     Image(systemName: "house.fill")
+                    Text("Feed")
                 }
             CalendarView()
                 .tabItem {
                     Image(systemName: "calendar")
+                    Text("Calendar")
                 }
             FriendView()
                 .tabItem {
                     Image(systemName: "person.fill")
+                    Text("Friends")
                 }
-            Button(action: { showingAddEvent = true }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 28))
-                        }
-                        .tabItem {
-                            Image(systemName: "plus")
-                        }
-            
-        }
-        /**NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+            AddView()
+                .tabItem{
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 28))
+                    Text("Add")
                 }
-                .onDelete(perform: deleteItems)
-            }
-            /**.toolbar  {
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action:openFeed){
-                        Label("Open Feed", systemImage: "magnifyingglass")
-                    }
-                }
-                ToolbarItemGroup(placement:.bottomBar){
-                        NavigationLink(destination:FeedView()){
-                            Image(systemName: "house")
-                        }
-                        Button(action:openFeed){
-                            Label("Open Feed", systemImage: "house.fill")
-                        }
-                        Button(action: calendarView) {
-                            Label("Open calendar View", systemImage: "calendar")
-                        }
-                        Button(action: friendView) {
-                            Label("Open Friend View", systemImage: "person.fill")
-                        }
-                        Button(action: addItem) {
-                            Label("Add Item", systemImage: "plus")
-                        }
-                        
-                        
-                }
-            }**/
-        } detail: {
-            Text("Select an item")
-        }**/
-    }
-    private func openFeed(){
+
         
-    }
-    private func friendView(){}
-    private func calendarView(){}
-    private func addItem() {
-        /**withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }**/
+        }
+        .sheet(isPresented: $showingAddEvent) {
+            AddEventView()
+        }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteEvents(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(events[index])
+            }
+        }
+    }
+}
+
+struct AddEventView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var title: String = ""
+    @State private var startTime: Date = Date()
+    @State private var endTime: Date = Date().addingTimeInterval(3600)
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("Event Details")) {
+                    TextField("Title", text: $title)
+                    DatePicker("Start Time", selection: $startTime)
+                    DatePicker("End Time", selection: $endTime)
+                }
+            }
+            .navigationTitle("New Event")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        let newEvent = Event(
+                            title: title,
+                            startTime: startTime,
+                            endTime: endTime
+                        )
+                        modelContext.insert(newEvent)
+                        dismiss()
+                    }
+                    .disabled(title.isEmpty || endTime <= startTime)
+                }
             }
         }
     }
@@ -100,5 +114,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: Event.self, inMemory: true)
 }
