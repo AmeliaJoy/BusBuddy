@@ -11,9 +11,33 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
+    @State private var showingAddEvent = false
 
     var body: some View {
-        NavigationSplitView {
+        TabView {
+            FeedView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                }
+            CalendarView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                }
+            FriendView()
+                .tabItem {
+                    Image(systemName: "person.fill")
+                }
+            Button(action: { showingAddEvent = true }) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 28))
+                        }
+                        .tabItem {
+                            Image(systemName: "plus.circle")
+                            Text("Add")
+                        }
+            
+        }
+        /**NavigationSplitView {
             List {
                 ForEach(items) { item in
                     NavigationLink {
@@ -24,26 +48,46 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+            /**.toolbar  {
+                ToolbarItem(placement: .navigationBarTrailing){
+                    Button(action:openFeed){
+                        Label("Open Feed", systemImage: "magnifyingglass")
                     }
                 }
-            }
+                ToolbarItemGroup(placement:.bottomBar){
+                        NavigationLink(destination:FeedView()){
+                            Image(systemName: "house")
+                        }
+                        Button(action:openFeed){
+                            Label("Open Feed", systemImage: "house.fill")
+                        }
+                        Button(action: calendarView) {
+                            Label("Open calendar View", systemImage: "calendar")
+                        }
+                        Button(action: friendView) {
+                            Label("Open Friend View", systemImage: "person.fill")
+                        }
+                        Button(action: addItem) {
+                            Label("Add Item", systemImage: "plus")
+                        }
+                        
+                        
+                }
+            }**/
         } detail: {
             Text("Select an item")
-        }
+        }**/
     }
-
+    private func openFeed(){
+        
+    }
+    private func friendView(){}
+    private func calendarView(){}
     private func addItem() {
-        withAnimation {
+        /**withAnimation {
             let newItem = Item(timestamp: Date())
             modelContext.insert(newItem)
-        }
+        }**/
     }
 
     private func deleteItems(offsets: IndexSet) {
