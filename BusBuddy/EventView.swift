@@ -62,12 +62,14 @@ struct EventView: View {
                 .foregroundColor(.secondary)
 
             // Meetup info
-            HStack {
-                Image(systemName: "mappin.and.ellipse")
-                Text("Meetup at \(GlobalDataTemp.events[eventNum].meetupTime, style: .time)")
-                    .font(.caption)
+            if(GlobalDataTemp.events[eventNum].meetupTime != nil){
+                HStack {
+                    Image(systemName: "mappin.and.ellipse")
+                    Text("Meetup at \(GlobalDataTemp.events[eventNum].meetupTime ?? Date(), style: .time)")
+                        .font(.caption)
+                }.foregroundColor(.gray)
             }
-            .foregroundColor(.gray)
+            
 
             // RSVPs
             

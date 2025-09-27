@@ -7,15 +7,15 @@
 
 import Foundation
 import SwiftUI
-struct EventSpecification: Hashable, Codable
+struct EventSpecification: Hashable, Codable, Identifiable
 {
-    var id: Int
+    var id: UUID = UUID()
     var title: String
     var time: Date
     var info: String
-    var coordinates: Coordinates
-    var meetupCoords: Coordinates
-    var meetupTime: Date
+    var location: String
+    var meetupLocation: String?
+    var meetupTime: Date?
     var imageName: String
     var image: Image {
         Image(imageName)
