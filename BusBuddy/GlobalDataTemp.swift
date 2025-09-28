@@ -30,9 +30,9 @@ class GlobalDataTemp
             ),
             EventSpecification(
                 id: 2,
-                title: "City Night Bus Tour",
+                title: "Little Tokyo Trip",
                 time: Date(),
-                info: "Explore the city lights after dark!",
+                info: "Explore the city lights after dark! (and maybe some ramen)",
                 coordinates: EventSpecification.Coordinates(latitude: 40.730610, longitude: -73.935242),
                 meetupCoords: EventSpecification.Coordinates(latitude: 40.741895, longitude: -73.989308),
                 meetupTime: Date(),

@@ -110,5 +110,8 @@ struct EventView: View {
     }
 }
 #Preview {
+    EventView(eventNum:0)
+}
+#Preview {
     EventView(eventNum:1)
 }

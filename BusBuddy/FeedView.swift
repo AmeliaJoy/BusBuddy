@@ -5,6 +5,8 @@
 //  Created by Amelia Schroeder on 9/27/25.
 //
 import SwiftUI
+import SwiftData
+
 
 struct FeedView: View {
     @State private var searchText: String = ""
@@ -181,7 +183,9 @@ struct EventCard: Identifiable {
 
 struct EventCardView: View {
     var event: EventCard
-    
+    @Environment(\.modelContext) private var modelContext
+    @State private var added = false
+
     var body: some View {
         VStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 12)
@@ -200,6 +204,42 @@ struct EventCardView: View {
             Text(event.price)
                 .font(.caption)
                 .foregroundColor(.blue)
+            
+            Button(action: addToCalendar) {
+                HStack {
+                    Image(systemName: added ? "checkmark.circle.fill" : "calendar.badge.plus")
+                    Text(added ? "Added" : "Add to Calendar")
+                }
+                .font(.caption)
+                .padding(6)
+                .background(added ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
+                .foregroundColor(added ? .green : .blue)
+                .cornerRadius(8)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 4)
         }
+        .padding(4)
     }
+    
+    
+    private func addToCalendar() {
+        guard !added else { return } // prevent duplicates
+
+        // Create new Event
+        let newEvent = Event(
+            title: event.title,
+            startTime: Date(),
+            endTime: Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
+        )
+
+        // Insert it into the model context
+        modelContext.insert(newEvent)
+
+        added = true
+    }
+
+
 }
+
+
